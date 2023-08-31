@@ -1,0 +1,21 @@
+.main-container {
+  margin-top: 100px;
+}
+.signup-container {
+  height: 100vh;
+}
+
+.signup-col {
+  padding: 20px;
+}
+
+.signup-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.image-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
