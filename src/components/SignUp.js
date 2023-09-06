@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import "./Signup.css";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -19,27 +21,21 @@ const Signup = () => {
       [name]: value,
     }));
   };
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Here you can add your signup logic, e.g., sending data to an API
-    const { UserName, email, password } = formData;
-    if (UserName && email && password) {
-      console.log(formData);
-      axios.post("http://localhost:5000/register", formData).then((res) => {
-        console.log(res.data.message);
-        const s = "User already registerd";
-        if (s == res.data.message) {
-          alert(res.data.message);
-        } else {
-          navigate("/");
-        }
-
-        console.log(res.data.name);
+    createUserWithEmailAndPassword(auth, formData.email, formData.password)
+      .then((res) => {
+        console.log(res);
+        alert("User Signup SuccessFully !");
+        navigate("/");
+      })
+      .catch((res) => {
+        console.log(res);
+        alert(res.message);
       });
-    } else {
-      alert("invlid input");
-    }
   };
 
   return (
@@ -49,7 +45,21 @@ const Signup = () => {
           <div className="signup-container">
             <Card style={{ transition: "none", transform: "none" }}>
               <Card.Body>
-                <h1 className="text-decoration-underline">Register Here</h1>
+                <h1
+                  style={{ textAlign: "center" }}
+                  className="text-decoration-underline"
+                >
+                  Register Here
+                </h1>
+                <h5
+                  style={{
+                    textAlign: "center",
+                    color: "red",
+                    textDecoration: "underline",
+                  }}
+                >
+                  {error}
+                </h5>
                 <Form onSubmit={handleSubmit}>
                   <Form.Group>
                     <Form.Label>User Name</Form.Label>

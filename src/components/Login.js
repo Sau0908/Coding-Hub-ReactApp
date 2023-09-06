@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import "./Login.css"; // Import your custom CSS file
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
 import GoogleButton from "react-google-button";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../firebase";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,24 +28,29 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     // Here you can implement your login logic
-    const { email, password } = user;
-    if (email && password) {
-      console.log(user);
-      axios.post("http://localhost:5000/login", user).then((res) => {
-        alert(res.data.message);
-        if (typeof res.data.userId != "undefined") {
-          localStorage.setItem("user_login", res.data.userId);
-          localStorage.setItem("user_name", res.data.name);
-          console.log(`set`);
-          navigate("/");
-        }
-
-        console.log(res.data.name);
+    signInWithEmailAndPassword(auth, user.email, user.password)
+      .then((res) => {
+        navigate("/");
+        alert("User Login Successfully !");
+      })
+      .catch((res) => {
+        alert(res.message);
+        console.log(res);
       });
-    } else {
-      alert("invalid Input");
-    }
   };
+
+  function handleGoogle() {
+    signInWithPopup(auth, provider)
+      .then((res) => {
+        console.log(res);
+        alert("User Login Successfully !");
+        navigate("/");
+      })
+      .catch((res) => {
+        console.log(res);
+        alert(res.message);
+      });
+  }
 
   return (
     <Container fluid className="login-container">
@@ -81,7 +88,7 @@ const Login = () => {
                 <h5 className="Registerbtn">
                   Don't have an account?{" "}
                   <Link to="/signup" className="text-decoration-underline">
-                    Register here
+                    Register Here
                   </Link>
                 </h5>
                 <h2 style={{ textAlign: "center" }}>OR</h2>
@@ -89,12 +96,7 @@ const Login = () => {
             </Card.Body>
           </Card>
           <div>
-            <GoogleButton
-              style={{ width: "100%" }}
-              onClick={() => {
-                console.log("Google button clicked");
-              }}
-            />
+            <GoogleButton style={{ width: "100%" }} onClick={handleGoogle} />
           </div>
         </Col>
         <Col md={6} className="d-none d-md-block">
