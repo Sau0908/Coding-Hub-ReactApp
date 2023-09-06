@@ -137,7 +137,7 @@ const Home = () => {
                 <Card.Body>
                   <Card.Title></Card.Title>
                   <Card.Text>
-                    <h4> M L</h4>
+                    <h4>Machine Learning</h4>
                   </Card.Text>
                 </Card.Body>
               </Card>
